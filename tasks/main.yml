@@ -1,2 +1,39 @@
 ---
-# tasks file for ansible-softether
+- block:
+  - name: install compiling dependency packages
+    apt: "name={{ item }} state=latest"
+    with_items:
+      - build-essential
+      - libreadline-dev
+      - libssl-dev
+      - libncurses5-dev
+      - zlib1g-dev
+  - name: check if dest dir exists
+    stat:
+      path: "/tmp/softethervpn"
+    register: "softether_dir"
+  - name: delete if dest dir exists
+    command: "rm -rf /tmp/softethervpn"
+    when: "softether_dir.stat.exists"
+  - name: download softether latest source code
+    unarchive:
+      src: "https://github.com/SoftEtherVPN/SoftEtherVPN/archive/master.zip"
+      dest: "/tmp/softethervpn"
+      remote_src: "yes"
+  - name: compiling softether vpn
+    shell: "./configure && make && make install"
+    args:
+      chdir: "/tmp/softethervpn"
+  - name: setup systemd unit
+    copy:
+      src: "softether.service"
+      dest: "/etc/systemd/system/softether.service"
+      owner: "root"
+      group: "root"
+      mode: "0644"
+  - name: reload systemd config
+    command: "systemctl daemon-reload"
+  - name: (re)start softether vpn server
+    service: "name=softether state=restarted"
+  tags:
+    - softether
