@@ -8,13 +8,10 @@
       - libssl-dev
       - libncurses5-dev
       - zlib1g-dev
-  - name: check if dest dir exists
-    stat:
-      path: "/tmp/softethervpn"
-    register: "softether_dir"
   - name: delete if dest dir exists
-    command: "rm -rf /tmp/softethervpn"
-    when: "softether_dir.stat.exists"
+    file:
+      path: "/tmp/softethervpn"
+      state: "absent"
   - name: download softether latest source code
     unarchive:
       src: "https://github.com/SoftEtherVPN/SoftEtherVPN/archive/master.zip"
