@@ -8,6 +8,8 @@
       - libssl-dev
       - libncurses5-dev
       - zlib1g-dev
+  - name: delete old softether package if exists
+    script: remove_softether.sh
   - name: delete if dest dir exists
     file:
       path: "/tmp/SoftEtherVPN-master"
@@ -31,6 +33,6 @@
   - name: reload systemd config
     command: "systemctl daemon-reload"
   - name: (re)start softether vpn server
-    service: "name=softether state=restarted"
+    service: "name=softether state=restarted enabled=yes"
   tags:
     - softether
