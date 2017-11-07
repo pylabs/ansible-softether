@@ -10,17 +10,17 @@
       - zlib1g-dev
   - name: delete if dest dir exists
     file:
-      path: "/tmp/softethervpn"
+      path: "/tmp/SoftEtherVPN-master"
       state: "absent"
   - name: download softether latest source code
     unarchive:
       src: "https://github.com/SoftEtherVPN/SoftEtherVPN/archive/master.zip"
-      dest: "/tmp/softethervpn"
+      dest: "/tmp"
       remote_src: "yes"
   - name: compiling softether vpn
     shell: "./configure && make && make install"
     args:
-      chdir: "/tmp/softethervpn"
+      chdir: "/tmp/SoftEtherVPN-master"
   - name: setup systemd unit
     copy:
       src: "softether.service"
