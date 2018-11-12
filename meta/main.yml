@@ -1,4 +1,5 @@
 galaxy_info:
+  role_name: softether
   author: William Wu
   description: Install SoftEther vpn server
   company: PyLabs
