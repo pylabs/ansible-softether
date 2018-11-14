@@ -1,8 +1,9 @@
 ---
 - block:
   - name: install compiling dependency packages
-    apt: "name={{ item }} state=latest"
-    with_items:
+    apt: "name={{ packages }} state=latest"
+    vars:
+      packages:
       - build-essential
       - libreadline-dev
       - libssl-dev
