@@ -1,7 +1,7 @@
 ---
 - block:
   - name: install compiling dependency packages
-    apt: "name={{ packages }} state=latest"
+    ansible.builtin.apt: "name={{ packages }} state=latest"
     vars:
       packages:
       - build-essential
@@ -10,30 +10,30 @@
       - libncurses5-dev
       - zlib1g-dev
   - name: delete old softether package if exists
-    script: remove_softether.sh
+    ansible.builtin.script: remove_softether.sh
   - name: delete if dest dir exists
-    file:
+    ansible.builtin.file:
       path: "/tmp/SoftEtherVPN-master"
       state: "absent"
   - name: download softether latest source code
-    unarchive:
+    ansible.builtin.unarchive:
       src: "https://github.com/SoftEtherVPN/SoftEtherVPN/archive/master.zip"
       dest: "/tmp"
       remote_src: "yes"
   - name: compiling softether vpn
-    shell: "./configure && make && make install"
+    ansible.builtin.shell: "./configure && make && make install"
     args:
       chdir: "/tmp/SoftEtherVPN-master"
   - name: setup systemd unit
-    copy:
+    ansible.builtin.copy:
       src: "softether.service"
       dest: "/etc/systemd/system/softether.service"
       owner: "root"
       group: "root"
       mode: "0644"
   - name: reload systemd config
-    command: "systemctl daemon-reload"
+    ansible.builtin.command: "systemctl daemon-reload"
   - name: (re)start softether vpn server
-    service: "name=softether state=restarted enabled=yes"
+    ansible.builtin.service: "name=softether state=restarted enabled=yes"
   tags:
     - softether
